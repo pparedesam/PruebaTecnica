@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: examen
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    networks:
+      - mi-red
+
+  person-service:
+    image: person-service
+    build:
+      context: ./person-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - mi-red
+    depends_on:
+      - database
+  
+  account-service:
+    image: account-service
+    build:
+      context: ./account-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - mi-red
+    depends_on:
+      - database
+
+networks:
+  mi-red:
+    driver: bridge
